@@ -2,11 +2,20 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
 var mongoose = require('mongoose');
+var MongoClient = require('mongodb').MongoClient;
 const port = 3000;
 mongoose.Promise = global.Promise;
 //var uri = "mongodb+srv://kay:LLTxqdo5BPi3nt7i@SR-GOLD-Bazapodataka.mongodb.net/Objave"
-var uri = 'mongodb+srv://SRGOLD:LLTxqdo5BPi3nt7i@sr-gold-bazapodataka-qhbns.mongodb.net/Objave?retryWrites=true'
+//var uri = "mongodb+srv://SRGOLD:LLTxqdo5BPi3nt7i@sr-gold-bazapodataka-qhbns.mongodb.net/Objave?retryWrites=true"
+var uri = 'mongodb://SRGOLD:LLTxqdo5BPi3nt7i@' +
+    'sr-gold-bazapodataka-shard-00-00-qhbns.mongodb.net:27017,' +
+    'sr-gold-bazapodataka-shard-00-01-qhbns.mongodb.net:27017,' +
+    'sr-gold-bazapodataka-shard-00-02-qhbns.mongodb.net:27017/Objave' +
+    //'?replicaSet=SR-GOLD-Bazapodataka-shard-0&authMechanism=SCRAM-SHA-1&authSource=admin'
+    'ssl=true&replicaSet=SR-GOLD-Bazapodataka-shard-0&mongos=null&authSource=admin'
 //var uri = 'mongodb://SRGOLD:LLTxqdo5BPi3nt7i@sr-gold-bazapodataka-shard-00-00-qhbns.mongodb.net:27017,sr-gold-bazapodataka-shard-00-01-qhbns.mongodb.net:27017,sr-gold-bazapodataka-shard-00-02-qhbns.mongodb.net:27017/Objave?ssl=true&replicaSet=SR-GOLD-Bazapodataka-shard-0&authSource=admin&retryWrites=true'
+
+
 var db = mongoose.connection;
 var app = express();
 var Objava = require('./model/sema');
@@ -15,16 +24,22 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', function(req, res){
-  mongoose.connect(uri);
+  mongoose.connect(uri, function(err){
+    if(err){
+      console.log(err);
+    }
+    else{
+    }
+  });
   var db = mongoose.connection;
-  Objava.find({}, function(err, objave){
+  db.collection('objave').find({}, function(err, objave){
     if(err){
       console.log(err);
     }
     else{
       res.json(objave);
     }
-    mongoose.connection.close();
+  mongoose.connection.close();
   })
 })
 
