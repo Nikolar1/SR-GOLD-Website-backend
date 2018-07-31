@@ -13,6 +13,6 @@ var Sema = mongoose.Schema({
         type : String,
         required : true
     }
-}, {collection: 'Objave'});
+}, {collection: 'objave'});
 
-var objava = module.exports = mongoose.model('Objave', Sema);
+var objava = module.exports = mongoose.model('objave', Sema);
